@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:calculator/naruto/cubit/naruto_cubit.dart';
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NarutoScreen extends StatefulWidget {
   const NarutoScreen({super.key});
@@ -12,41 +14,44 @@ class NarutoScreen extends StatefulWidget {
 }
 
 class _NarutoScreenState extends State<NarutoScreen> {
-  final listNaruto = ValueNotifier<List<NarutoModel>>([]);
+  final cubit = NarutoCubit();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    getHttp();
+    cubit.getCharacters();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
-      body: ValueListenableBuilder(valueListenable: listNaruto, builder: (_, listNarutoValue, __) =>
-      ListView.builder(itemBuilder: (context, index){
-        final item = listNarutoValue[index];
-        return Column(
-          children: [
-            Text(item.name),
-            item.images.isNotEmpty ?
-            Image.network(item.images[0]): const Icon(Icons.no_photography),
-          ],
-        );
-      },
-        itemCount: listNarutoValue.length,
-      )
+      body: BlocBuilder<NarutoCubit, NarutoState>(
+        bloc: cubit,
+        builder: (context, state) {
+          if(state is Error){
+            return Center(child: Text(state.message),);
+          }
+          if(state is Success) {
+            final listNarutoValue = state.list;
+            return ListView.builder(itemBuilder: (context, index) {
+              final item = listNarutoValue[index];
+              return Column(
+                children: [
+                  Text(item.name),
+                  item.images.isNotEmpty ?
+                  Image.network(item.images[0]) : const Icon(
+                      Icons.no_photography),
+                ],
+              );
+            },
+              itemCount: listNarutoValue.length,
+            );
+          }
+          return Center(child: CircularProgressIndicator(),);
+        },
       ),
     ));
   }
 
-  Future<List<NarutoModel>> getHttp() async{
-    final dio = Dio();
-    final response = await dio.get('https://dattebayo-api.onrender.com/characters');
-    final List<dynamic> data = response.data['characters'];
-    final List<NarutoModel> list = data.map((e) => NarutoModel.fromJson(e)).toList();
-    listNaruto.value= list;
-    return list;
-  }
 
 }
