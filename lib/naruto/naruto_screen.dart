@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calculator/data/hive_helper.dart';
 import 'package:calculator/naruto/cubit/naruto_cubit.dart';
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
 import 'package:dio/dio.dart';
@@ -19,6 +21,7 @@ class _NarutoScreenState extends State<NarutoScreen> {
   @override
   void initState() {
     super.initState();
+    cubit.getLocalCharacters();
     cubit.getCharacters();
   }
 
@@ -39,8 +42,15 @@ class _NarutoScreenState extends State<NarutoScreen> {
                 children: [
                   Text(item.name),
                   item.images.isNotEmpty ?
-                  Image.network(item.images[0]) : const Icon(
-                      Icons.no_photography),
+                  CachedNetworkImage(
+                      imageUrl:item.images[0],
+                    placeholder: (context, url) =>
+                    CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    fit: BoxFit.cover,
+                  ) : const Icon(
+                      Icons.no_photography
+                  ),
                 ],
               );
             },
