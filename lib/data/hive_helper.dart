@@ -6,6 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HiveHelper {
   static const String boxName = 'naruto_box';
+  static const String counterKey = 'counter_value';
+
+  Future<void> saveCount(int count) async{
+    var box = await Hive.openBox('settings');
+    await box.put(counterKey, count);
+  }
+
+  Future<int> getCounter() async{
+    var box = await Hive.openBox('settings');
+    return box.get(counterKey, defaultValue: 0);
+  }
 
   Future<void> saveList(List<NarutoModel> items) async{
     var box = await Hive.openBox<NarutoModel>(boxName);
