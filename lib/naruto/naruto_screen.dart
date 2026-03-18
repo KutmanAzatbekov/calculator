@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:calculator/data/hive_helper.dart';
-import 'package:calculator/naruto/cubit/naruto_cubit.dart';
+import 'package:calculator/di/injectable_module.dart';
+import 'package:calculator/naruto/bloc/naruto_bloc.dart';
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,25 +17,25 @@ class NarutoScreen extends StatefulWidget {
 }
 
 class _NarutoScreenState extends State<NarutoScreen> {
-  final cubit = NarutoCubit();
+  final cubit = getIt<NarutoBloc>();
 
   @override
   void initState() {
     super.initState();
-    cubit.getLocalCharacters();
-    cubit.getCharacters();
+    cubit.add(GetCharactersEvent());
+    cubit.add(GetLocalCharactersEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
-      body: BlocBuilder<NarutoCubit, NarutoState>(
+      body: BlocBuilder<NarutoBloc, NarutoState>(
         bloc: cubit,
         builder: (context, state) {
-          if(state is Error){
-            return Center(child: Text(state.message),);
+          if(state.error != null){
+            return Center(child: Text(state.error!),);
           }
-          if(state is Success) {
+          if(state.list != null) {
             final listNarutoValue = state.list;
             return ListView.builder(itemBuilder: (context, index) {
               final item = listNarutoValue[index];
@@ -54,7 +55,7 @@ class _NarutoScreenState extends State<NarutoScreen> {
                 ],
               );
             },
-              itemCount: listNarutoValue.length,
+              itemCount: listNarutoValue!.length,
             );
           }
           return Center(child: CircularProgressIndicator(),);

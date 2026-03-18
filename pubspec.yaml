@@ -41,6 +41,9 @@ dependencies:
   cached_network_image: ^3.4.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  injectable: ^2.7.1+4
+  get_it: ^9.2.1
+  injectable_generator: ^2.6.2
 
 dev_dependencies:
   flutter_test:
