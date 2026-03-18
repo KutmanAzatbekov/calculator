@@ -1,6 +1,7 @@
 import 'package:calculator/calculator_screen.dart';
 import 'package:calculator/counter/bloc/counter_bloc.dart';
 import 'package:calculator/counter/counter_screen.dart';
+import 'package:calculator/di/injectable_module.dart';
 import 'package:calculator/harry/harry_screen.dart';
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
 import 'package:calculator/naruto/naruto_screen.dart';
@@ -11,6 +12,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 void main() async{
+  configureDependencies();
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(NarutoModelAdapter());

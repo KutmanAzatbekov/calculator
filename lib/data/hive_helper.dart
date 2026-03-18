@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@Injectable()
 class HiveHelper {
   static const String boxName = 'naruto_box';
   static const String counterKey = 'counter_value';
