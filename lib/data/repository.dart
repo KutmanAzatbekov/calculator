@@ -11,4 +11,7 @@ Future<List<NarutoModel>> getHttp() async{
   final List<NarutoModel> list = data.map((e) => NarutoModel.fromJson(e)).toList();
   return list;
 }
+
+
+
 }
