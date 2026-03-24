@@ -1,4 +1,5 @@
 import 'package:calculator/naruto/naruto_model/naruto_model.dart';
+import 'package:calculator/rick/rick_model/rick_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,6 +13,10 @@ Future<List<NarutoModel>> getHttp() async{
   return list;
 }
 
-
+Future<RickWrapper> getRick({String? nextPage}) async{
+  final dio = Dio();
+  final response = await dio.get(nextPage ?? 'https://rickandmortyapi.com/api/character');
+  return RickWrapper.fromJson(response.data);
+}
 
 }
